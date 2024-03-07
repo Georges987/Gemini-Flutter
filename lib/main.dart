@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:geminix/env.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 void main() {
@@ -39,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
 
-    final apiKey = "AIzaSyBD29fcITBNLiB_JNAln1s4W0njerD-rgA";
+    const apiKey = APIKEY;
 
     if (apiKey == null) {
       print('No \$API_KEY environment variable');
