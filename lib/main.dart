@@ -31,31 +31,35 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   late GenerativeModel _model;
-  String _generated_text = '';
+
+  List<String> _generated_text = [];
+
   void initState() {
     // TODO: implement initState
     super.initState();
-    
-    final apiKey = Platform.environment['API_KEY'];
+
+    final apiKey = "AIzaSyBD29fcITBNLiB_JNAln1s4W0njerD-rgA";
+
     if (apiKey == null) {
       print('No \$API_KEY environment variable');
-      exit(1);
+
+      // exit(1);
     }
-
     _model = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
-
     _generateText('Salut Gemini');
   }
 
   void _generateText(text) async {
     setState(() {
-      _generated_text = "Génération en cours...";
+      debugPrint("loading");
+      _generated_text.add("Génération en cours...");
     });
+
     final content = [Content.text(text)];
     final response = await _model.generateContent(content);
     setState(() {
-      _generated_text =
-          response.text ?? 'Aucune réponse obtenue de la part de Gemini';
+      _generated_text
+          .add(response.text ?? 'Aucune réponse obtenue de la part de Gemini');
     });
   }
 
@@ -63,29 +67,33 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Geminix'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(
-              _generated_text,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                hintText: 'Entrez votre texte',
-              ),
-              controller: _textEditingController,
-            ),
-            ElevatedButton(
-              onPressed: () => _generateText(_textEditingController.text),
-              child: const Text('Generate du contenu'),
-            ),
-          ],
+        appBar: AppBar(
+          title: const Text('Geminix'),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(5),
+          child: Column(
+            children: [
+              Container(
+                height: 475,
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: Text(_generated_text.last),
+                  ),
+                ),
+              ),
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: 'Entrez votre texte',
+                ),
+                controller: _textEditingController,
+              ),
+              ElevatedButton(
+                onPressed: () => _generateText(_textEditingController.text),
+                child: const Text('Generate du contenu'),
+              ),
+            ],
+          ),
+        ));
   }
 }
